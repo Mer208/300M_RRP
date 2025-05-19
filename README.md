@@ -1,6 +1,6 @@
 # 300M Time Trials Application
 
-A web-based application for recording, ranking, and publishing 300 meter time trial times, following the coaching philosophy of Tony Hollar (RRP - Record, Rank, Publish).
+A web-based application for recording, ranking, and publishing 300 meter time trial times, following the coaching philosophy of Tony Hollar (RRP - Record, Rank, Publish). Created using Cursur.
 
 ## Features
 
