@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Record Group Times{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Record Group Times</h2>
+            <p class="lead">Record times for {{ athletes|length }} selected athletes</p>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('record_group_time') }}">
+        {% for athlete in athletes %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">{{ athlete.name }} (Grade {{ athlete.grade }})</h5>
+            </div>
+            <div class="card-body">
+                <input type="hidden" name="athlete_ids[]" value="{{ athlete.id }}">
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="time_seconds_{{ athlete.id }}" class="form-label">Time (seconds)</label>
+                            <input type="number" step="0.01" class="form-control" 
+                                   id="time_seconds_{{ athlete.id }}" 
+                                   name="time_seconds[]" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="notes_{{ athlete.id }}" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes_{{ athlete.id }}" 
+                                      name="notes[]" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="row mt-4">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Record All Times</button>
+                <a href="{{ url_for('select_group_athletes') }}" class="btn btn-secondary">Back to Selection</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %} 

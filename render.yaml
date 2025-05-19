@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: 300m-trials
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+
+databases:
+  - name: 300m-trials-db
+    databaseName: 300m_trials
+    user: 300m_trials_user
+    plan: free 

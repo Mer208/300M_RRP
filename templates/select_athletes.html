@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Select Athletes{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Select Athletes</h2>
+            <p class="lead">Choose the athletes you want to record times for.</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group mb-3">
+                <input type="text" id="searchAthletes" class="form-control" placeholder="Search athletes...">
+                <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary" id="selectAll">Select All</button>
+                <button type="button" class="btn btn-outline-primary" id="deselectAll">Deselect All</button>
+            </div>
+        </div>
+    </div>
+
+    <form id="athleteSelectionForm" method="POST" action="{{ url_for('record_time') if single else url_for('record_group_time') }}">
+        <div class="row">
+            {% for grade in [9, 10, 11, 12] %}
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Grade {{ grade }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="athlete-list" data-grade="{{ grade }}">
+                            {% for athlete in athletes if athlete.grade == grade %}
+                            <div class="form-check mb-2 athlete-item">
+                                <input class="form-check-input athlete-checkbox" type="checkbox" 
+                                       name="athlete_ids[]" value="{{ athlete.id }}" 
+                                       id="athlete{{ athlete.id }}">
+                                <label class="form-check-label" for="athlete{{ athlete.id }}">
+                                    {{ athlete.name }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row mt-4">
+            <div class="col text-center">
+                <button type="submit" class="btn btn-primary btn-lg" id="continueBtn" disabled>
+                    Continue to Record Times
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchAthletes');
+    const clearSearch = document.getElementById('clearSearch');
+    const selectAll = document.getElementById('selectAll');
+    const deselectAll = document.getElementById('deselectAll');
+    const continueBtn = document.getElementById('continueBtn');
+    const athleteCheckboxes = document.querySelectorAll('.athlete-checkbox');
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        document.querySelectorAll('.athlete-item').forEach(item => {
+            const athleteName = item.querySelector('label').textContent.toLowerCase();
+            item.style.display = athleteName.includes(searchTerm) ? '' : 'none';
+        });
+    });
+
+    // Clear search
+    clearSearch.addEventListener('click', function() {
+        searchInput.value = '';
+        document.querySelectorAll('.athlete-item').forEach(item => {
+            item.style.display = '';
+        });
+    });
+
+    // Select all
+    selectAll.addEventListener('click', function() {
+        document.querySelectorAll('.athlete-checkbox').forEach(checkbox => {
+            if (checkbox.closest('.athlete-item').style.display !== 'none') {
+                checkbox.checked = true;
+            }
+        });
+        updateContinueButton();
+    });
+
+    // Deselect all
+    deselectAll.addEventListener('click', function() {
+        document.querySelectorAll('.athlete-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        updateContinueButton();
+    });
+
+    // Update continue button state
+    function updateContinueButton() {
+        const checkedBoxes = document.querySelectorAll('.athlete-checkbox:checked');
+        continueBtn.disabled = checkedBoxes.length === 0;
+    }
+
+    // Listen for checkbox changes
+    athleteCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateContinueButton);
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

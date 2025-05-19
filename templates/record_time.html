@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Record Time{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Record Time for {{ athlete.name }}</h2>
+            <p class="lead">Grade {{ athlete.grade }}</p>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('record_time') }}">
+        <input type="hidden" name="athlete_id" value="{{ athlete.id }}">
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="time_seconds" class="form-label">Time (seconds)</label>
+                    <input type="number" step="0.01" class="form-control" id="time_seconds" name="time_seconds" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Record Time</button>
+                <a href="{{ url_for('select_athletes') }}" class="btn btn-secondary">Back to Selection</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %} 

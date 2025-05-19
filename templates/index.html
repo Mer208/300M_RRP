@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to 300M Trials</h1>
+            <p class="lead">Track and manage your athletes' performance in the 300-meter trials.</p>
+            
+            {% if current_user.is_authenticated %}
+                <div class="mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg me-3">Go to Dashboard</a>
+                    <a href="{{ url_for('record_time') }}" class="btn btn-success btn-lg">Record New Time</a>
+                </div>
+            {% else %}
+                <div class="mt-4">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-3">Login</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-success btn-lg">Register</a>
+                </div>
+            {% endif %}
+            
+            <div class="mt-5">
+                <h2>Features</h2>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <h4>Track Times</h4>
+                        <p>Record and monitor athlete performance</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>View Rankings</h4>
+                        <p>See how athletes compare</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Track Progress</h4>
+                        <p>Monitor improvement over time</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

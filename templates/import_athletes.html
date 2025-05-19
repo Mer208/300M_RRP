@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Import Athletes{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Import Athletes</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Select Spreadsheet File</label>
+                            <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls" required>
+                            <div class="form-text">
+                                Supported formats: CSV, Excel (.xlsx, .xls)
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h5 class="alert-heading">File Requirements:</h5>
+                            <ul class="mb-0">
+                                <li>File must contain these exact column names: <code>firstname</code>, <code>lastname</code>, <code>grade</code></li>
+                                <li>Grade must be a number between 9 and 12</li>
+                                <li>Names should not be empty</li>
+                                <li>Duplicate athletes will be skipped</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-3">
+                            <h5>Example Format:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>firstname</th>
+                                            <th>lastname</th>
+                                            <th>grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>John</td>
+                                            <td>Doe</td>
+                                            <td>9</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jane</td>
+                                            <td>Smith</td>
+                                            <td>10</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Import Athletes</button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

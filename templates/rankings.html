@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Rankings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h3>Time Trial Rankings</h3>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                Filter by Grade
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('rankings') }}">All Grades</a></li>
+                                {% for grade in range(9, 13) %}
+                                <li><a class="dropdown-item" href="{{ url_for('rankings', grade=grade) }}">Grade {{ grade }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="btn-group ms-2">
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                Time Frame
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('rankings', time_frame='all') }}">All Time</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('rankings', time_frame='season') }}">This Season</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('rankings', time_frame='week') }}">This Week</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Athlete</th>
+                                <th>Grade</th>
+                                <th>Time</th>
+                                <th>Date</th>
+                                <th>Coach</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rank, trial in enumerate(rankings, 1) %}
+                            <tr>
+                                <td>{{ rank }}</td>
+                                <td>{{ trial.name }}</td>
+                                <td>{{ trial.grade }}</td>
+                                <td>{{ "%.2f"|format(trial.time_seconds) }}s</td>
+                                <td>{{ trial.trial_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ trial.coach_username }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Grade Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="gradeDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Time Trends</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="timeTrendsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Grade Distribution Chart
+const gradeCtx = document.getElementById('gradeDistributionChart').getContext('2d');
+new Chart(gradeCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for grade, count in grade_distribution %}'Grade {{ grade }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Number of Athletes',
+            data: [{% for grade, count in grade_distribution %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+// Time Trends Chart
+const timeCtx = document.getElementById('timeTrendsChart').getContext('2d');
+new Chart(timeCtx, {
+    type: 'line',
+    data: {
+        labels: [{% for week, avg_time in time_trends %}'Week of {{ week.strftime("%b %d") }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Average Time (seconds)',
+            data: [{% for week, avg_time in time_trends %}{{ "%.2f"|format(avg_time) }}{% if not loop.last %}, {% endif %}{% endfor %}],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %} 

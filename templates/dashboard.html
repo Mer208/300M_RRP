@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Recent Time Trials</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Athlete</th>
+                                <th>Grade</th>
+                                <th>Time</th>
+                                <th>Date</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trial in recent_trials %}
+                            <tr>
+                                <td>{{ trial.athlete.name }}</td>
+                                <td>{{ trial.athlete.grade }}</td>
+                                <td>{{ "%.2f"|format(trial.time_seconds) }}s</td>
+                                <td>{{ trial.trial_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ trial.notes or '' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Quick Actions</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('record_time') }}" class="btn btn-primary">
+                        <i class="fas fa-stopwatch"></i> Record New Time
+                    </a>
+                    <a href="{{ url_for('record_group_time') }}" class="btn btn-success">
+                        <i class="fas fa-users"></i> Record Group Time
+                    </a>
+                    <a href="{{ url_for('import_athletes') }}" class="btn btn-info">
+                        <i class="fas fa-file-import"></i> Import Athletes
+                    </a>
+                    <a href="{{ url_for('rankings') }}" class="btn btn-info">
+                        <i class="fas fa-trophy"></i> View Rankings
+                    </a>
+                    <a href="{{ url_for('most_improved') }}" class="btn btn-success">
+                        <i class="fas fa-chart-line"></i> Most Improved
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4>Statistics</h4>
+            </div>
+            <div class="card-body">
+                <canvas id="statsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Record Time Trial</h5>
+                <p class="card-text">Record individual time trials for athletes.</p>
+                <a href="{{ url_for('record_time') }}" class="btn btn-primary">Record Time</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Record Group Time Trial</h5>
+                <p class="card-text">Record time trials for multiple athletes simultaneously.</p>
+                <a href="{{ url_for('record_group_time') }}" class="btn btn-primary">Record Group Time</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Sample data for the statistics chart
+const ctx = document.getElementById('statsChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{
+            label: 'Average Time',
+            data: [45.2, 44.8, 44.5, 44.2],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: false,
+                title: {
+                    display: true,
+                    text: 'Time (seconds)'
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %} 
