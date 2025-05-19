@@ -18,12 +18,15 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
 # Database configuration
-if os.getenv('DATABASE_URL'):
-    # Render PostgreSQL
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL').replace('postgres://', 'postgresql://')
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    # Handle Render's PostgreSQL URL
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 else:
     # Local development
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://localhost/300m_trials')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/300m_trials'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
