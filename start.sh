@@ -6,8 +6,15 @@ set -o errexit
 pip install -r requirements.txt
 
 # Initialize the database
-flask db init
+if [ ! -d "migrations" ]; then
+    echo "Initializing database migrations..."
+    flask db init
+fi
+
+# Create and apply migrations
+echo "Creating database migrations..."
 flask db migrate -m "Initial migration"
+echo "Applying database migrations..."
 flask db upgrade
 
 # Start the application
