@@ -2,9 +2,6 @@
 # exit on error
 set -o errexit
 
-# Install Python dependencies
-#pip install -r requirements.txt
-
 # Initialize the database
 if [ ! -d "migrations" ]; then
     echo "Initializing database migrations..."
@@ -14,8 +11,10 @@ fi
 # Create and apply migrations
 echo "Creating database migrations..."
 flask db migrate -m "Initial migration"
+
+# Force upgrade the database to the latest version
 echo "Applying database migrations..."
-flask db upgrade
+flask db upgrade --force
 
 # Start the application
 gunicorn app:app 
