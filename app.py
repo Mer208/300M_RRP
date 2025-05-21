@@ -19,14 +19,18 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
 # Database configuration
 database_url = os.getenv('DATABASE_URL')
+print(f"Database URL from environment: {database_url}")  # Debug print
+
 if database_url:
     # Handle Render's PostgreSQL URL
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    print(f"Final database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")  # Debug print
 else:
     # Local development
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/300m_trials'
+    print("Using local database URL")  # Debug print
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
